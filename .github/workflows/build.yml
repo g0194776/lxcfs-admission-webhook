@@ -1,0 +1,33 @@
+name: release new version
+on: [push]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.13
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v1
+        with:
+          path: go/src/github.com/g0194776/lxcfs-admission-webhook
+
+      - name: Print Debugging Parameters
+        run: |
+          pwd
+          echo ${HOME}
+          echo ${GITHUB_WORKSPACE}
+          echo ${GOPATH}
+          echo ${GOROOT}
+        env:
+          GOPATH: /home/runner/work/lxcfs-admission-webhook/go
+
+      - name: Building Program
+        run: |
+          go build -v -o lxcfs-admission-webhook .
+        env:
+          GOPATH: /home/runner/work/lxcfs-admission-webhook/go
