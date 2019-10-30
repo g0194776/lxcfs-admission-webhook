@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	defaultAnnotation      = "initializer.kubernetes.io/lxcfs"
-	defaultNamespace       = "default"
+	defaultAnnotation = "initializer.kubernetes.io/lxcfs"
+	defaultNamespace  = "default"
 )
 
 var (
@@ -56,10 +56,6 @@ var volumeMountsTemplate = []corev1.VolumeMount{
 	{
 		Name:      "lxcfs-proc-uptime",
 		MountPath: "/proc/uptime",
-	},
-	{
-		Name:      "lxcfs-proc-loadavg",
-		MountPath: "/proc/loadavg",
 	},
 }
 var volumesTemplate = []corev1.Volume{
@@ -108,14 +104,6 @@ var volumesTemplate = []corev1.Volume{
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{
 				Path: "/var/lib/lxcfs/proc/uptime",
-			},
-		},
-	},
-	{
-		Name: "lxcfs-proc-loadavg",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: "/var/lib/lxcfs/proc/loadavg",
 			},
 		},
 	},
