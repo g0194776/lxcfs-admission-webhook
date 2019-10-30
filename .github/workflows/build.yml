@@ -1,4 +1,4 @@
-name: release new version
+name: build only
 on: [push]
 jobs:
   build:
