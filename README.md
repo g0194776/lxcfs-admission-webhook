@@ -1,5 +1,8 @@
 # Kubernetes Admission Webhook for LXCFS
 
+![build](https://github.com/g0194776/lxcfs-admission-webhook/workflows/build%20only/badge.svg)
+![release](https://github.com/g0194776/lxcfs-admission-webhook/workflows/release/badge.svg)
+
 This project shows how to build and deploy an [AdmissionWebhook](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#admission-webhooks) for [LXCFS](https://github.com/lxc/lxcfs).
 
 ## Prerequisites
