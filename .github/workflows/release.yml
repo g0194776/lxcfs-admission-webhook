@@ -2,7 +2,7 @@ name: release new version
 on:
   push:
     tags:
-      - *
+      - '**'
 jobs:
   build:
     name: Build
