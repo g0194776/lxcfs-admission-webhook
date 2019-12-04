@@ -36,8 +36,9 @@ jobs:
           GOPATH: /home/runner/work/lxcfs-admission-webhook/go
 
       - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: jerray/publish-docker-action@master
         with:
-          name: g0194776/lxcfs-admission-webhook
+          repository: g0194776/lxcfs-admission-webhook
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          auto_tag: true
