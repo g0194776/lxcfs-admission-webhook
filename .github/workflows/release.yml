@@ -1,8 +1,8 @@
 name: release new version
 on:
   push:
-    branches:
-      - refs/tags/*
+    tags:
+      - *
 jobs:
   build:
     name: Build
