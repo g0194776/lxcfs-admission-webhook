@@ -28,6 +28,6 @@ jobs:
 
       - name: Building Program
         run: |
-          go build -v -o lxcfs-admission-webhook .
+          CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o lxcfs-admission-webhook
         env:
           GOPATH: /home/runner/work/lxcfs-admission-webhook/go
