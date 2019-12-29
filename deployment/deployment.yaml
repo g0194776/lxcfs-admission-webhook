@@ -24,6 +24,9 @@ spec:
             - -alsologtostderr
             - -v=4
             - 2>&1
+          env:
+            - name: HOST_MOUNT_PATH
+              value: "/var/lib/lxc/lxcfs"
           volumeMounts:
             - name: webhook-certs
               mountPath: /etc/webhook/certs

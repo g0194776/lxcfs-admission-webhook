@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 
 	"github.com/golang/glog"
 	"k8s.io/api/admission/v1beta1"
@@ -17,6 +18,7 @@ const (
 )
 
 var (
+	srcPath           string
 	annotation        string
 	configmap         string
 	initializerName   string
@@ -57,13 +59,17 @@ var volumeMountsTemplate = []corev1.VolumeMount{
 		Name:      "lxcfs-proc-uptime",
 		MountPath: "/proc/uptime",
 	},
+	{
+		Name:      "lxcfs-main-path",
+		MountPath: filepath.Join(srcPath, ".."),
+	},
 }
 var volumesTemplate = []corev1.Volume{
 	{
 		Name: "lxcfs-proc-cpuinfo",
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{
-				Path: "/var/lib/lxcfs/proc/cpuinfo",
+				Path: filepath.Join(srcPath, "/proc/cpuinfo"),
 			},
 		},
 	},
@@ -71,7 +77,7 @@ var volumesTemplate = []corev1.Volume{
 		Name: "lxcfs-proc-diskstats",
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{
-				Path: "/var/lib/lxcfs/proc/diskstats",
+				Path: filepath.Join(srcPath, "/proc/diskstats"),
 			},
 		},
 	},
@@ -79,7 +85,7 @@ var volumesTemplate = []corev1.Volume{
 		Name: "lxcfs-proc-meminfo",
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{
-				Path: "/var/lib/lxcfs/proc/meminfo",
+				Path: filepath.Join(srcPath, "/proc/meminfo"),
 			},
 		},
 	},
@@ -87,7 +93,7 @@ var volumesTemplate = []corev1.Volume{
 		Name: "lxcfs-proc-stat",
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{
-				Path: "/var/lib/lxcfs/proc/stat",
+				Path: filepath.Join(srcPath, "/proc/stat"),
 			},
 		},
 	},
@@ -95,7 +101,7 @@ var volumesTemplate = []corev1.Volume{
 		Name: "lxcfs-proc-swaps",
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{
-				Path: "/var/lib/lxcfs/proc/swaps",
+				Path: filepath.Join(srcPath, "/proc/swaps"),
 			},
 		},
 	},
@@ -103,7 +109,15 @@ var volumesTemplate = []corev1.Volume{
 		Name: "lxcfs-proc-uptime",
 		VolumeSource: corev1.VolumeSource{
 			HostPath: &corev1.HostPathVolumeSource{
-				Path: "/var/lib/lxcfs/proc/uptime",
+				Path: filepath.Join(srcPath, "/proc/uptime"),
+			},
+		},
+	},
+	{
+		Name: "lxcfs-main-path",
+		VolumeSource: corev1.VolumeSource{
+			HostPath: &corev1.HostPathVolumeSource{
+				Path: filepath.Join(srcPath, ".."),
 			},
 		},
 	},

@@ -22,6 +22,10 @@ func main() {
 	flag.StringVar(&parameters.keyFile, "tlsKeyFile", "/etc/webhook/certs/key.pem", "File containing the x509 private key to --tlsCertFile.")
 	flag.Parse()
 
+	if srcPath = os.Getenv("HOST_MOUNT_PATH"); srcPath == "" {
+		panic("Environment \"HOST_MOUNT_PATH\" is required for initializing lxcfs web hook!")
+	}
+
 	pair, err := tls.LoadX509KeyPair(parameters.certFile, parameters.keyFile)
 	if err != nil {
 		glog.Errorf("Failed to load key pair: %v", err)
