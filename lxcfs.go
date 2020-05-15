@@ -3,10 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"path/filepath"
-
 	"github.com/golang/glog"
 	"k8s.io/api/admission/v1beta1"
+	"path/filepath"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -18,109 +17,107 @@ const (
 )
 
 var (
-	srcPath           string
-	annotation        string
-	configmap         string
-	initializerName   string
-	namespace         string
-	requireAnnotation bool
+	srcPath              string
+	volumeMountsTemplate []corev1.VolumeMount
+	volumesTemplate      []corev1.Volume
 )
 
-// -v /var/lib/lxcfs/proc/cpuinfo:/proc/cpuinfo:rw
-// -v /var/lib/lxcfs/proc/diskstats:/proc/diskstats:rw
-// -v /var/lib/lxcfs/proc/meminfo:/proc/meminfo:rw
-// -v /var/lib/lxcfs/proc/stat:/proc/stat:rw
-// -v /var/lib/lxcfs/proc/swaps:/proc/swaps:rw
-// -v /var/lib/lxcfs/proc/uptime:/proc/uptime:rw
-// -v /var/lib/lxcfs/proc/loadavg:/proc/loadavg:rw
-var volumeMountsTemplate = []corev1.VolumeMount{
-
-	{
-		Name:      "lxcfs-proc-cpuinfo",
-		MountPath: "/proc/cpuinfo",
-	},
-	{
-		Name:      "lxcfs-proc-meminfo",
-		MountPath: "/proc/meminfo",
-	},
-	{
-		Name:      "lxcfs-proc-diskstats",
-		MountPath: "/proc/diskstats",
-	},
-	{
-		Name:      "lxcfs-proc-stat",
-		MountPath: "/proc/stat",
-	},
-	{
-		Name:      "lxcfs-proc-swaps",
-		MountPath: "/proc/swaps",
-	},
-	{
-		Name:      "lxcfs-proc-uptime",
-		MountPath: "/proc/uptime",
-	},
-	{
-		Name:      "lxcfs-main-path",
-		MountPath: filepath.Join(srcPath, ".."),
-	},
-}
-var volumesTemplate = []corev1.Volume{
-	{
-		Name: "lxcfs-proc-cpuinfo",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: filepath.Join(srcPath, "/proc/cpuinfo"),
+func initializeTemplates() {
+	// -v /var/lib/lxcfs/proc/cpuinfo:/proc/cpuinfo:rw
+	// -v /var/lib/lxcfs/proc/diskstats:/proc/diskstats:rw
+	// -v /var/lib/lxcfs/proc/meminfo:/proc/meminfo:rw
+	// -v /var/lib/lxcfs/proc/stat:/proc/stat:rw
+	// -v /var/lib/lxcfs/proc/swaps:/proc/swaps:rw
+	// -v /var/lib/lxcfs/proc/uptime:/proc/uptime:rw
+	// -v /var/lib/lxcfs/proc/loadavg:/proc/loadavg:rw
+	volumeMountsTemplate = []corev1.VolumeMount{
+		{
+			Name:      "lxcfs-proc-cpuinfo",
+			MountPath: "/proc/cpuinfo",
+		},
+		{
+			Name:      "lxcfs-proc-meminfo",
+			MountPath: "/proc/meminfo",
+		},
+		{
+			Name:      "lxcfs-proc-diskstats",
+			MountPath: "/proc/diskstats",
+		},
+		{
+			Name:      "lxcfs-proc-stat",
+			MountPath: "/proc/stat",
+		},
+		{
+			Name:      "lxcfs-proc-swaps",
+			MountPath: "/proc/swaps",
+		},
+		{
+			Name:      "lxcfs-proc-uptime",
+			MountPath: "/proc/uptime",
+		},
+		{
+			Name:      "lxcfs-main-path",
+			MountPath: filepath.Join(srcPath, ".."),
+		},
+	}
+	volumesTemplate = []corev1.Volume{
+		{
+			Name: "lxcfs-proc-cpuinfo",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, "/proc/cpuinfo"),
+				},
 			},
 		},
-	},
-	{
-		Name: "lxcfs-proc-diskstats",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: filepath.Join(srcPath, "/proc/diskstats"),
+		{
+			Name: "lxcfs-proc-diskstats",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, "/proc/diskstats"),
+				},
 			},
 		},
-	},
-	{
-		Name: "lxcfs-proc-meminfo",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: filepath.Join(srcPath, "/proc/meminfo"),
+		{
+			Name: "lxcfs-proc-meminfo",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, "/proc/meminfo"),
+				},
 			},
 		},
-	},
-	{
-		Name: "lxcfs-proc-stat",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: filepath.Join(srcPath, "/proc/stat"),
+		{
+			Name: "lxcfs-proc-stat",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, "/proc/stat"),
+				},
 			},
 		},
-	},
-	{
-		Name: "lxcfs-proc-swaps",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: filepath.Join(srcPath, "/proc/swaps"),
+		{
+			Name: "lxcfs-proc-swaps",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, "/proc/swaps"),
+				},
 			},
 		},
-	},
-	{
-		Name: "lxcfs-proc-uptime",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: filepath.Join(srcPath, "/proc/uptime"),
+		{
+			Name: "lxcfs-proc-uptime",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, "/proc/uptime"),
+				},
 			},
 		},
-	},
-	{
-		Name: "lxcfs-main-path",
-		VolumeSource: corev1.VolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: filepath.Join(srcPath, ".."),
+		{
+			Name: "lxcfs-main-path",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, ".."),
+				},
 			},
 		},
-	},
+	}
 }
 
 // main mutation process

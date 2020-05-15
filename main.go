@@ -25,6 +25,7 @@ func main() {
 	if srcPath = os.Getenv("HOST_MOUNT_PATH"); srcPath == "" {
 		panic("Environment \"HOST_MOUNT_PATH\" is required for initializing lxcfs web hook!")
 	}
+	initializeTemplates()
 
 	pair, err := tls.LoadX509KeyPair(parameters.certFile, parameters.keyFile)
 	if err != nil {
