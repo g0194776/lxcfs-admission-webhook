@@ -30,6 +30,7 @@ func initializeTemplates() {
 	// -v /var/lib/lxcfs/proc/swaps:/proc/swaps:rw
 	// -v /var/lib/lxcfs/proc/uptime:/proc/uptime:rw
 	// -v /var/lib/lxcfs/proc/loadavg:/proc/loadavg:rw
+	// -v /var/lib/lxcfs/sys/devices/system/cpu/online:/sys/devices/system/cpu/online:rw
 	volumeMountsTemplate = []corev1.VolumeMount{
 		{
 			Name:      "lxcfs-proc-cpuinfo",
@@ -54,6 +55,10 @@ func initializeTemplates() {
 		{
 			Name:      "lxcfs-proc-uptime",
 			MountPath: "/proc/uptime",
+		},
+		{
+			Name:      "lxcfs-sys-cpu-online",
+			MountPath: "/sys/devices/system/cpu/online",
 		},
 		{
 			Name:      "lxcfs-main-path",
@@ -106,6 +111,14 @@ func initializeTemplates() {
 			VolumeSource: corev1.VolumeSource{
 				HostPath: &corev1.HostPathVolumeSource{
 					Path: filepath.Join(srcPath, "/proc/uptime"),
+				},
+			},
+		},
+		{
+			Name: "lxcfs-sys-cpu-online",
+			VolumeSource: corev1.VolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: filepath.Join(srcPath, "/sys/devices/system/cpu/online"),
 				},
 			},
 		},
